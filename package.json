@@ -1,0 +1,31 @@
+{
+  "name": "practica-intermedia-pweb2",
+  "version": "1.0.0",
+  "description": "| Categoría | Tecnología |\r |---|---|\r | Runtime | Node.js 22+ con ESM |\r | Framework | Express 5 |\r | Base de datos | MongoDB Atlas + Mongoose |\r | Validación | Zod |\r | Autenticación | JWT + bcryptjs |\r | Subida de archivos | Multer |\r | Seguridad | Helmet, express-rate-limit, express-mongo-sanitize |",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yeipi33/Practica-Intermedia-PWeb2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Yeipi33/Practica-Intermedia-PWeb2/issues"
+  },
+  "homepage": "https://github.com/Yeipi33/Practica-Intermedia-PWeb2#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.3.3",
+    "multer": "^2.1.1",
+    "zod": "^4.3.6"
+  }
+}
