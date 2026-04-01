@@ -1,9 +1,12 @@
 {
   "name": "practica-intermedia-pweb2",
   "version": "1.0.0",
-  "description": "| Categoría | Tecnología |\r |---|---|\r | Runtime | Node.js 22+ con ESM |\r | Framework | Express 5 |\r | Base de datos | MongoDB Atlas + Mongoose |\r | Validación | Zod |\r | Autenticación | JWT + bcryptjs |\r | Subida de archivos | Multer |\r | Seguridad | Helmet, express-rate-limit, express-mongo-sanitize |",
-  "main": "index.js",
+  "description": "API REST para gestión de albaranes de obra - BildyApp",
+  "type": "module",
+  "main": "src/index.js",
   "scripts": {
+    "dev": "node --watch --env-file=.env src/index.js",
+    "start": "node --env-file=.env src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -13,7 +16,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/Yeipi33/Practica-Intermedia-PWeb2/issues"
   },
@@ -22,6 +24,8 @@
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.4.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.3.3",
