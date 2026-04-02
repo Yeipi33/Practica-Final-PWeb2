@@ -4,18 +4,19 @@
 import mongoose from 'mongoose';
 
 const dbConnect = async () => {
-    const DB_URI = process.env.MONGODB_URI;
+    const DB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/PracticaIntermediaPWeb2';
 
-    if (!DB_URI) {
-        console.error('❌ MONGODB_URI no está definida en .env');
-        process.exit(1);
+    if (!process.env.MONGODB_URI) {
+        console.warn('⚠️  MONGODB_URI no definida en .env, usando fallback local:', DB_URI);
     }
 
     try {
         await mongoose.connect(DB_URI);
-        console.log('✅ Conectado a MongoDB');  
+        console.log('✅ Conectado a MongoDB');
     } catch (error) {
-        console.error('❌ Error conectando a MongoDB:', error.message);
+        console.error('❌ Error conectando a MongoDB:', error);
+        console.error('   URI usada:', DB_URI);
+        console.error('   Estado de mongoose:', mongoose.connection.readyState);
         process.exit(1);
     }
 };
