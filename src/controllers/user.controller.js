@@ -1,9 +1,9 @@
 import { randomInt } from 'node:crypto';
-import User from '../models/User.js';
+import User from '../models/Usuario.js';
 import { encrypt } from '../utils/handlePassword.js';
-import { generateAccessToken, generateRefreshToken } from '../utils/handleJwt.js';
+import { generateAccessToken, generateRefreshToken } from '../utils/handleJWT.js';
 import { AppError } from '../utils/AppError.js';
-import { notificationService } from '../services/notification.service.js';
+//import { notificationService } from '../services/notification.service.js';
 
 export const register = async (req, res) => {
   const { email, password } = req.body;
