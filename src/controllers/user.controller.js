@@ -47,3 +47,43 @@ export const register = async (req, res) => {
     },
   });
 };
+
+export const validateEmail = async (req, res) => {
+  const { code } = req.body;
+
+  const user = await User.findById(req.user._id).select(
+    '+verificationCode +verificationAttempts'
+  );
+
+  if (!user) throw AppError.notFound('Usuario');
+
+  if (user.status === 'verified') {
+    throw AppError.badRequest('El email ya está verificado');
+  }
+
+  if (user.verificationAttempts <= 0) {
+    throw AppError.tooManyRequests('Has agotado los intentos de verificación');
+  }
+
+  if (user.verificationCode !== code) {
+    user.verificationAttempts -= 1;
+    await user.save();
+
+    if (user.verificationAttempts <= 0) {
+      throw AppError.tooManyRequests('Código incorrecto. Has agotado los intentos');
+    }
+
+    throw AppError.badRequest(
+      `Código incorrecto. Te quedan ${user.verificationAttempts} intentos`
+    );
+  }
+
+  user.status = 'verified';
+  user.verificationCode = undefined;
+  user.verificationAttempts = undefined;
+  await user.save();
+
+  notificationService.emit('user:verified', { email: user.email });
+
+  res.json({ message: 'Email verificado correctamente' });
+};
