@@ -12,3 +12,12 @@ export const registerSchema = z.object({
       .min(8, 'La contraseña debe tener al menos 8 caracteres'),
   }),
 });
+
+export const validationCodeSchema = z.object({
+  body: z.object({
+    code: z
+      .string({ required_error: 'El código es requerido' })
+      .length(6, 'El código debe tener exactamente 6 dígitos')
+      .regex(/^\d{6}$/, 'El código debe contener solo dígitos'),
+  }),
+});

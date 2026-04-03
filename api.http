@@ -1,0 +1,12 @@
+@baseUrl = http://localhost:3000/api
+//@accessToken = PEGAR_ACCESS_TOKEN_AQUI
+//@refreshToken = PEGAR_REFRESH_TOKEN_AQUI
+
+### User Registration
+POST http://localhost:3000/api/user/register
+Content-Type: application/json
+
+{
+  "email": "alice@test.com",
+  "password": "password123"
+}
