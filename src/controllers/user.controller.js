@@ -144,3 +144,25 @@ export const updateCompany = async (req, res) => {
 
   res.json({ data: user });
 };
+
+export const updateLogo = async (req, res) => {
+  if (!req.file) throw AppError.badRequest('No se ha subido ningún archivo');
+
+  const currentUser = await User.findById(req.user._id).populate('company');
+
+  if (!currentUser.company) {
+    throw AppError.badRequest('Debes completar el onboarding de compañía primero');
+  }
+
+  const PORT = process.env.PORT || 3000;
+  const PUBLIC_URL = process.env.PUBLIC_URL || `http://localhost:${PORT}`;
+  const logoUrl = `${PUBLIC_URL}/uploads/${req.file.filename}`;
+
+  const company = await Company.findByIdAndUpdate(
+    currentUser.company._id,
+    { logo: logoUrl },
+    { new: true }
+  );
+
+  res.json({ data: company });
+};

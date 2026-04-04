@@ -7,7 +7,9 @@ import {
   validateEmail,
   updatePersonalData,
   updateCompany,
+  updateLogo,
 } from '../controllers/user.controller.js';
+import uploadMiddleware from '../middleware/uploads.js';
 import {
   registerSchema,
   validationCodeSchema,
@@ -42,6 +44,13 @@ router.put(
   authMiddleware,
   validate(companyDataSchema),
   updateCompany
+);
+
+router.patch(
+  '/logo',
+  authMiddleware,
+  uploadMiddleware.single('logo'),
+  updateLogo
 );
 
 export default router;
