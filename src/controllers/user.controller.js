@@ -1,6 +1,8 @@
+// src/controllers/user.controller.js
 import { randomInt } from 'node:crypto';
 import User from '../models/Usuario.js';
-import { encrypt , compare} from '../utils/handlePassword.js';
+import Company from '../models/Company.js';
+import { encrypt, compare } from '../utils/handlePassword.js';
 import { generateAccessToken, generateRefreshToken } from '../utils/handleJWT.js';
 import { AppError } from '../utils/AppError.js';
 //import { notificationService } from '../services/notification.service.js';
@@ -86,4 +88,59 @@ export const validateEmail = async (req, res) => {
   notificationService.emit('user:verified', { email: user.email });
 
   res.json({ message: 'Email verificado correctamente' });
+};
+
+export const updatePersonalData = async (req, res) => {
+  const { name, lastName, nif } = req.body;
+
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { name, lastName, nif },
+    { new: true, runValidators: true }
+  ).populate('company');
+
+  res.json({ data: user });
+};
+
+export const updateCompany = async (req, res) => {
+  const { name, cif, address, isFreelance } = req.body;
+  const currentUser = req.user;
+
+  let companyData = { name, cif, address, isFreelance };
+
+  // Si es autónomo → usar datos personales del usuario
+  if (isFreelance) {
+    companyData = {
+      name: currentUser.name,
+      cif: currentUser.nif,
+      address: currentUser.address,
+      isFreelance: true,
+    };
+  }
+
+  // Buscar si ya existe una Company con ese CIF
+  const existingCompany = await Company.findOne({ cif: companyData.cif });
+
+  let company;
+  let newRole = currentUser.role;
+
+  if (!existingCompany) {
+    // No existe → crear nueva, el usuario es owner (admin)
+    company = await Company.create({
+      ...companyData,
+      owner: currentUser._id,
+    });
+  } else {
+    // Ya existe → unirse con role guest
+    company = existingCompany;
+    newRole = 'guest';
+  }
+
+  const user = await User.findByIdAndUpdate(
+    currentUser._id,
+    { company: company._id, role: newRole },
+    { new: true }
+  ).populate('company');
+
+  res.json({ data: user });
 };
