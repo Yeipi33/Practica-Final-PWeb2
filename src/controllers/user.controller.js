@@ -1,6 +1,6 @@
 import { randomInt } from 'node:crypto';
 import User from '../models/Usuario.js';
-import { encrypt } from '../utils/handlePassword.js';
+import { encrypt , compare} from '../utils/handlePassword.js';
 import { generateAccessToken, generateRefreshToken } from '../utils/handleJWT.js';
 import { AppError } from '../utils/AppError.js';
 //import { notificationService } from '../services/notification.service.js';

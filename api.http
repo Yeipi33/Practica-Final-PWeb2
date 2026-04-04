@@ -10,3 +10,30 @@ Content-Type: application/json
   "email": "alice@test.com",
   "password": "password123"
 }
+
+### Credenciales correctas → 200
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+  "email": "alice@test.com",
+  "password": "password123"
+}
+
+### Contraseña incorrecta → 401
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+  "email": "alice@test.com",
+  "password": "wrongpassword"
+}
+
+### Email no registrado → 401
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+  "email": "noexiste@test.com",
+  "password": "password123"
+}

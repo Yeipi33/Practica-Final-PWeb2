@@ -21,3 +21,15 @@ export const validationCodeSchema = z.object({
       .regex(/^\d{6}$/, 'El código debe contener solo dígitos'),
   }),
 });
+
+export const loginSchema = z.object({
+  body: z.object({
+    email: z
+      .string({ required_error: 'El email es requerido' })
+      .email('Email no válido')
+      .transform((val) => val.toLowerCase().trim()),
+    password: z
+      .string({ required_error: 'La contraseña es requerida' })
+      .min(8, 'Mínimo 8 caracteres'),
+  }),
+});
