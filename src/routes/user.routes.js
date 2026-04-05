@@ -12,6 +12,7 @@ import {
   logout,
   deleteUser,
   inviteUser,
+  changePassword,
 } from '../controllers/user.controller.js';
 import authMiddleware from '../middleware/auth.middleware.js';
 import checkRol from '../middleware/role.middleware.js';
@@ -26,6 +27,7 @@ import {
   refreshTokenSchema,
   deleteUserSchema,
   inviteUserSchema,
+  changePasswordSchema,
 } from '../validators/auth.validators.js';
 
 const router = Router();

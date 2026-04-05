@@ -279,3 +279,20 @@ export const inviteUser = async (req, res) => {
     },
   });
 };
+
+export const changePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  // Incluir password para comparar
+  const user = await User.findById(req.user._id).select('+password');
+
+  const isMatch = await compare(currentPassword, user.password);
+  if (!isMatch) {
+    throw AppError.badRequest('La contraseña actual es incorrecta');
+  }
+
+  user.password = await encrypt(newPassword);
+  await user.save();
+
+  res.json({ message: 'Contraseña actualizada correctamente' });
+};
