@@ -10,8 +10,11 @@ import {
   getMe,
   refreshToken,
   logout,
+  deleteUser,
+  inviteUser,
 } from '../controllers/user.controller.js';
 import authMiddleware from '../middleware/auth.middleware.js';
+import checkRol from '../middleware/role.middleware.js';
 import uploadMiddleware from '../middleware/uploads.js';
 import { validate } from '../middleware/validate.js';
 import {
@@ -21,6 +24,8 @@ import {
   personalDataSchema,
   companyDataSchema,
   refreshTokenSchema,
+  deleteUserSchema,
+  inviteUserSchema,
 } from '../validators/auth.validators.js';
 
 const router = Router();
@@ -61,5 +66,20 @@ router.patch(
 
 router.get('/me', authMiddleware, getMe);
 router.post('/logout', authMiddleware, logout);
+
+router.delete(
+  '/delete',
+  authMiddleware,
+  validate(deleteUserSchema),
+  deleteUser
+);
+
+router.post(
+  '/invite',
+  authMiddleware,
+  checkRol(['admin']),
+  validate(inviteUserSchema),
+  inviteUser
+);
 
 export default router;

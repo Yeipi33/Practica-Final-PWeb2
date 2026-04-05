@@ -219,3 +219,63 @@ export const logout = async (req, res) => {
 
   res.json({ message: 'Sesión cerrada correctamente' });
 };
+
+export const deleteUser = async (req, res) => {
+  const isSoft = req.query.soft === 'true';
+  const userId = req.user._id;
+
+  if (isSoft) {
+    // Soft delete: se marca como eliminado pero no se borra físicamente
+    await User.findByIdAndUpdate(userId, { deleted: true });
+  } else {
+    // Hard delete: se elimina físicamente de la base de datos
+    await User.findByIdAndDelete(userId);
+  }
+
+  notificationService.emit('user:deleted', { email: req.user.email });
+
+  res.status(204).end();
+};
+
+export const inviteUser = async (req, res) => {
+  const { email, name, lastName } = req.body;
+  const inviter = req.user;
+
+  if (!inviter.company) {
+    throw AppError.badRequest('Debes pertenecer a una compañía para invitar usuarios');
+  }
+
+  const existing = await User.findOne({ email });
+  if (existing) {
+    throw AppError.conflict('Ya existe un usuario con ese email');
+  }
+
+  const tempPassword = await encrypt(`Bildy${Math.random().toString(36).slice(2, 10)}`);
+  const verificationCode = String(randomInt(100000, 999999));
+
+  const newUser = await User.create({
+    email,
+    name,
+    lastName,
+    password: tempPassword,
+    verificationCode,
+    verificationAttempts: 3,
+    status: 'pending',
+    role: 'guest',
+    company: inviter.company,
+  });
+
+  notificationService.emit('user:invited', {
+    email: newUser.email,
+    company: inviter.company,
+  });
+
+  res.status(201).json({
+    data: {
+      _id: newUser._id,
+      email: newUser.email,
+      role: newUser.role,
+      company: newUser.company,
+    },
+  });
+};

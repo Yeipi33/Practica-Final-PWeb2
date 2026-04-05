@@ -78,3 +78,23 @@ export const refreshTokenSchema = z.object({
     refreshToken: z.string({ required_error: 'El refresh token es requerido' }),
   }),
 });
+
+export const deleteUserSchema = z.object({
+  query: z.object({
+    soft: z
+      .enum(['true', 'false'])
+      .transform((val) => val === 'true')
+      .optional(),
+  }),
+});
+
+export const inviteUserSchema = z.object({
+  body: z.object({
+    email: z
+      .string({ required_error: 'El email es requerido' })
+      .email('Email no válido')
+      .transform((val) => val.toLowerCase().trim()),
+    name: z.string().min(2).trim().optional(),
+    lastName: z.string().min(2).trim().optional(),
+  }),
+});
