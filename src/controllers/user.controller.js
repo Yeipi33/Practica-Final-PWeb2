@@ -166,3 +166,10 @@ export const updateLogo = async (req, res) => {
 
   res.json({ data: company });
 };
+
+export const getMe = async (req, res) => {
+  const user = await User.findById(req.user._id).populate('company');
+
+  if (!user) throw AppError.notFound('Usuario');
+  res.json({ data: user });
+};
