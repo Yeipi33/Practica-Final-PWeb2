@@ -90,6 +90,26 @@ export const validateEmail = async (req, res) => {
   res.json({ message: 'Email verificado correctamente' });
 };
 
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  // Incluir password (select: false en el modelo)
+  const user = await User.findOne({ email, deleted: false }).select('+password');
+
+  if (!user) throw AppError.unauthorized('Credenciales inválidas');
+
+  const isMatch = await compare(password, user.password);
+  if (!isMatch) throw AppError.unauthorized('Credenciales inválidas');
+
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken();
+
+  user.refreshToken = refreshToken;
+  await user.save();
+
+  res.json(buildTokenResponse(user, accessToken, refreshToken));
+};
+
 export const updatePersonalData = async (req, res) => {
   const { name, lastName, nif } = req.body;
 
@@ -172,4 +192,30 @@ export const getMe = async (req, res) => {
 
   if (!user) throw AppError.notFound('Usuario');
   res.json({ data: user });
+};
+
+export const refreshToken = async (req, res) => {
+  const { refreshToken: token } = req.body;
+
+  const user = await User.findOne({ refreshToken: token, deleted: false }).select(
+    '+refreshToken'
+  );
+
+  if (!user) {
+    throw AppError.unauthorized('Refresh token inválido o expirado');
+  }
+
+  const newAccessToken = generateAccessToken(user);
+  const newRefreshToken = generateRefreshToken();
+
+  user.refreshToken = newRefreshToken;
+  await user.save();
+
+  res.json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+};
+
+export const logout = async (req, res) => {
+  await User.findByIdAndUpdate(req.user._id, { refreshToken: null });
+
+  res.json({ message: 'Sesión cerrada correctamente' });
 };

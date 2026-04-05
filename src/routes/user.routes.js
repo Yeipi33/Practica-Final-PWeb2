@@ -3,10 +3,13 @@ import { Router } from 'express';
 import {
   register,
   validateEmail,
+  login,
   updatePersonalData,
   updateCompany,
   updateLogo,
-  getMe
+  getMe,
+  refreshToken,
+  logout,
 } from '../controllers/user.controller.js';
 import authMiddleware from '../middleware/auth.middleware.js';
 import uploadMiddleware from '../middleware/uploads.js';
@@ -17,13 +20,15 @@ import {
   loginSchema,
   personalDataSchema,
   companyDataSchema,
+  refreshTokenSchema,
 } from '../validators/auth.validators.js';
 
 const router = Router();
 
 //publicas
 router.post("/register", validate(registerSchema), register);
-//router.post('/login', validate(loginSchema), login);
+router.post('/login', validate(loginSchema), login);
+router.post('/refresh', validate(refreshTokenSchema), refreshToken);
 
 //protegidas
 router.put(
@@ -55,5 +60,6 @@ router.patch(
 );
 
 router.get('/me', authMiddleware, getMe);
+router.post('/logout', authMiddleware, logout);
 
 export default router;

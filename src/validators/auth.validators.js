@@ -72,3 +72,9 @@ export const companyDataSchema = z.object({
     isFreelancer: z.boolean().optional(),
   }),
 });
+
+export const refreshTokenSchema = z.object({
+  body: z.object({
+    refreshToken: z.string({ required_error: 'El refresh token es requerido' }),
+  }),
+});
