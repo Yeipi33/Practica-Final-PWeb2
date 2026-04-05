@@ -98,3 +98,21 @@ export const inviteUserSchema = z.object({
     lastName: z.string().min(2).trim().optional(),
   }),
 });
+
+//valida los datos que llegan al body cuando el usuario quiere cambiar su contraseña
+export const changePasswordSchema = z.object({
+  body: z
+    .object({
+      currentPassword: z
+        .string({ required_error: 'La contraseña actual es requerida' })
+        .min(8, 'Mínimo 8 caracteres'),
+      newPassword: z
+        .string({ required_error: 'La nueva contraseña es requerida' })
+        .min(8, 'La nueva contraseña debe tener al menos 8 caracteres'),
+    })
+    // .refine() valida que la nueva cntraseña sea diferente a la actual
+    .refine((data) => data.currentPassword !== data.newPassword, {
+      message: 'La nueva contraseña debe ser diferente a la actual',
+      path: ['newPassword'],
+    }),
+});
