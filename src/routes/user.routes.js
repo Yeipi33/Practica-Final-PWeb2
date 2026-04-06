@@ -60,6 +60,13 @@ router.put(
 );
 
 router.patch(
+  '/company',
+  authMiddleware,
+  validate(companyDataSchema),
+  updateCompany
+);
+
+router.patch(
   '/logo',
   authMiddleware,
   uploadMiddleware.single('logo'),

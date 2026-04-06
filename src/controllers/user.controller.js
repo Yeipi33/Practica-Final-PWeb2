@@ -5,7 +5,7 @@ import Company from '../models/Company.js';
 import { encrypt, compare } from '../utils/handlePassword.js';
 import { generateAccessToken, generateRefreshToken } from '../utils/handleJWT.js';
 import { AppError } from '../utils/AppError.js';
-//import { notificationService } from '../services/notification.service.js';
+import { notificationService } from '../services/notification.service.js';
 
 export const register = async (req, res) => {
   const { email, password } = req.body;
@@ -107,7 +107,16 @@ export const login = async (req, res) => {
   user.refreshToken = refreshToken;
   await user.save();
 
-  res.json(buildTokenResponse(user, accessToken, refreshToken));
+  res.json({
+  accessToken,
+  refreshToken,
+  user: {
+    _id: user._id,
+    email: user.email,
+    status: user.status,
+    role: user.role,
+    },
+  });
 };
 
 export const updatePersonalData = async (req, res) => {
