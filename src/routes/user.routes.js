@@ -91,4 +91,6 @@ router.post(
   inviteUser
 );
 
+router.put('/password', authMiddleware, changePassword);
+
 export default router;
