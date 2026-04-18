@@ -1,5 +1,5 @@
 {
-  "name": "practica-intermedia-pweb2",
+  "name": "practica-final-pweb2",
   "version": "1.0.0",
   "description": "API REST para gestión de albaranes de obra - BildyApp",
   "type": "module",
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Yeipi33/Practica-Intermedia-PWeb2.git"
+    "url": "git+https://github.com/Yeipi33/Practica-Final-PWeb2.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Yeipi33/Practica-Intermedia-PWeb2/issues"
+    "url": "https://github.com/Yeipi33/Practica-Final-PWeb2/issues"
   },
-  "homepage": "https://github.com/Yeipi33/Practica-Intermedia-PWeb2#readme",
+  "homepage": "https://github.com/Yeipi33/Practica-Final-PWeb2#readme",
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
