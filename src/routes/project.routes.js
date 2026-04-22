@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { authMiddleware } from '../middleware/auth.middleware.js'
+import authMiddleware from '../middleware/auth.middleware.js'
 import { validate } from '../middleware/validate.js'
 import { createProjectValidator, updateProjectValidator } from '../validators/project.validator.js'
 import {

@@ -1,6 +1,6 @@
 import Project from '../models/Project.js'
-import Client from '../models/Client.js'
-import AppError from '../utils/AppError.js'
+import Client from '../models/Clients.js'
+import {AppError} from '../utils/AppError.js'
 
 //post /api/project
 export const createProject = async (req, res, next) => {

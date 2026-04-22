@@ -9,7 +9,7 @@ const  addressSchema = new mongoose.Schema({
 }, { _id: false });
 
 const projectSchema = new mongoose.Schema({
-    user:        { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   company:     { type: mongoose.Schema.Types.ObjectId, ref: 'Company', required: true },
   client:      { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true },
   name:        { type: String, required: true, trim: true },
