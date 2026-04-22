@@ -1,7 +1,80 @@
 import DeliveryNote from '../models/DeliveryNote.js'
 import Project from '../models/Project.js'
-import Client from '../models/Client.js'
-import AppError from '../utils/AppError.js'
+import Client from '../models/Clients.js'
+import {AppError} from '../utils/AppError.js'
+import { uploadToCloudinary, uploadPdfToCloudinary } from '../services/storage.service.js'
+import { generateDeliveryNotePdf } from '../services/pdf.service.js'
+
+//patch /api/deliverynote/:id/sign
+export const signDeliveryNote = async (req, res, next) => {
+  try {
+    const { company } = req.user
+
+    const deliveryNote = await DeliveryNote.findOne({ _id: req.params.id, company, deleted: false })
+      .populate('user', 'name email')
+      .populate('client', 'name cif email phone address')
+      .populate('project', 'name projectCode notes')
+
+    if (!deliveryNote) return next(new AppError('Albarán no encontrado', 404))
+    if (deliveryNote.signed) return next(new AppError('Este albarán ya está firmado', 400))
+    if (!req.file) return next(new AppError('Debes adjuntar la imagen de la firma', 400))
+
+    const signatureResult = await uploadToCloudinary(
+      req.file.buffer,
+      'bildyapp/signatures',
+      `signature_${deliveryNote._id}`
+    )
+
+    deliveryNote.signed = true
+    deliveryNote.signedAt = new Date()
+    deliveryNote.signatureUrl = signatureResult.secure_url
+
+    const pdfBuffer = await generateDeliveryNotePdf(deliveryNote)
+
+    const pdfResult = await uploadPdfToCloudinary(
+      pdfBuffer,
+      'bildyapp/pdfs',
+      `deliverynote_${deliveryNote._id}`
+    )
+
+    deliveryNote.pdfUrl = pdfResult.secure_url
+    await deliveryNote.save()
+
+    res.json({ ok: true, message: 'Albarán firmado correctamente', deliveryNote })
+  } catch (error) {
+    next(error)
+  }
+}
+
+//get /api/deliverynote/pdf/:id
+export const downloadDeliveryNotePdf = async (req, res, next) => {
+  try {
+    const { company } = req.user
+
+    const deliveryNote = await DeliveryNote.findOne({ _id: req.params.id, company, deleted: false })
+      .populate('user',    'name email')
+      .populate('client',  'name cif email phone address')
+      .populate('project', 'name projectCode notes')
+
+    if (!deliveryNote) return next(new AppError('Albarán no encontrado', 404))
+
+    if (deliveryNote.signed && deliveryNote.pdfUrl) {
+      return res.redirect(deliveryNote.pdfUrl)
+    }
+
+    const pdfBuffer = await generateDeliveryNotePdf(deliveryNote)
+
+    res.set({
+      'Content-Type':        'application/pdf',
+      'Content-Disposition': `attachment; filename="albaran_${deliveryNote._id}.pdf"`,
+      'Content-Length':      pdfBuffer.length
+    })
+
+    res.send(pdfBuffer)
+  } catch (error) {
+    next(error)
+  }
+}
 
 //post /api/deliverynote
 export const createDeliveryNote = async (req, res, next) => {
