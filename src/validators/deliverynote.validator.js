@@ -5,23 +5,24 @@ const workerSchema = z.object({
   hours: z.number().min(0)
 })
 
-export const createDeliveryNoteValidator = z.object({
+const deliveryNoteBase = z.object({
   client:      z.string().min(1, 'El cliente es obligatorio'),
   project:     z.string().min(1, 'El proyecto es obligatorio'),
   format:      z.enum(['material', 'hours']),
   description: z.string().optional(),
   workDate:    z.string().min(1, 'La fecha de trabajo es obligatoria'),
-  //material
   material:    z.string().optional(),
   quantity:    z.number().min(0).optional(),
   unit:        z.string().optional(),
-  //horas
   hours:       z.number().min(0).optional(),
   workers:     z.array(workerSchema).optional()
-}).refine(data => {
+})
+
+export const createDeliveryNoteValidator = deliveryNoteBase.refine(data => {
   if (data.format === 'material') return !!data.material
   if (data.format === 'hours') return !!data.hours || (data.workers && data.workers.length > 0)
   return true
 }, { message: 'Debes rellenar los campos correspondientes al formato elegido' })
 
-export const updateDeliveryNoteValidator = createDeliveryNoteValidator.partial()
+// Para el update usamos el base sin refine y todo opcional
+export const updateDeliveryNoteValidator = deliveryNoteBase.partial()

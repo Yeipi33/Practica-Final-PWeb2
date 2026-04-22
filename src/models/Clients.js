@@ -8,8 +8,8 @@ const  addressSchema = new mongoose.Schema({
     province: { type: String, trim: true },
 }, { _id: false });
 
-const clientSchema = new moongose.Schema({
-    user:    { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
+const clientSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company', required: true },
   name:    { type: String, required: true, trim: true },
   cif:     { type: String, required: true, trim: true, uppercase: true },

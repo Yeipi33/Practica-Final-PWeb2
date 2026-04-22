@@ -1,5 +1,5 @@
 import Client from '../models/Clients.js';
-import AppError from '../utils/AppError.js';
+import { AppError } from '../utils/AppError.js';
 
 //post /api/client
 export const createClient = async (req, res, next) => {
