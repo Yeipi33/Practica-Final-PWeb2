@@ -8,7 +8,7 @@ export const createClient = async (req, res, next) => {
 
         if(!company) return next(new AppError('Debes tener una compañia asociada', 400));
         
-        const exists = await Client.findOne({ if: req.body.cif.toUpperCase(), company });
+        const exists = await Client.findOne({ cif: req.body.cif.toUpperCase(), company });
         if(exists) return next(new AppError('Ya existe un cliente con ese CIF en tu compañia', 400));
 
         const client = await Client.create({
@@ -26,7 +26,7 @@ export const createClient = async (req, res, next) => {
 //Put /api/client/:id
 export const updateClient = async (req, res, next) => {
     try{
-        const company = req.user;
+        const {company} = req.user;
 
         const client = await Client.findOne({ _id: req.params.id, company, deleted: false })
         if (!client) return next(new AppError('Cliente no encontrado', 404))
