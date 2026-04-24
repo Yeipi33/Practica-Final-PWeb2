@@ -4,10 +4,10 @@
 ### ============================================================
 
 @baseUrl = http://localhost:3000/api
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWQ1MmY1MjhhZDFlYjJjNTExMzM4ZTAiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzU1Nzg5NjIsImV4cCI6MTc3NTU4NjE2Mn0.VsvJfStEO-HmrarwYDZeOBS3w6Jp8_FQhdEFm1Ud4HI
-@refreshToken = cb076eb01b735fb33d8df35e4adae270bd3f7073525cff397e0331a3707de71bce75eea5882c4b882f02ff595749c71067fd401533293d5a8aa3571ad9e5a63c
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWViMjhiNmU1OWM2N2VmYjk3ZDY2NTciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzcwMTkwNjIsImV4cCI6MTc3NzAyNjI2Mn0.IvqAf-EIJw2ainAEfWQtXQos8RDo98uNFBXJ7uDkixk
+@refreshToken = 56ae63de3b8eaef889a41136598e56c4d38b75a778d4de4f9c51060962b075d230196d2a34c70d6d6b56b9185782d49ae8872d7e12614218e5584c3d2bc24a6e
 
-
+@clientId = 69eb2e2ebc783ec50d92af54
 ### ============================================================
 ### 0. HEALTH CHECK
 ### ============================================================
@@ -24,8 +24,8 @@ POST {{baseUrl}}/user/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "john@bildyapp.com",
-  "password": "password777"
+  "email": "manuel@bildyapp.com",
+  "password": "pass333333"
 }
 
 ###
@@ -74,7 +74,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "code": "846142"
+  "code": "896533"
 }
 
 ###
@@ -119,8 +119,8 @@ POST {{baseUrl}}/user/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "john@bildyapp.com",
-  "password": "password777"
+  "email": "maria@bildyapp.com",
+  "password": "pass123456"
 }
 
 ###
@@ -157,9 +157,9 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "name": "john",
-  "lastName": "thompson",
-  "nif": "76637382B"
+  "name": "maria",
+  "lastName": "garcia",
+  "nif": "12345678P"
 }
 
 ###
@@ -200,14 +200,14 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "name": "Aston Martin Aramco Cognizant F1 Team",
-  "cif": "B98765432",
+  "name": "Renault F1 Team",
+  "cif": "B12345679",
   "address": {
-    "street": "Calle de la Innovación",
-    "number": "33",
-    "postal": "46345",
-    "city": "Silverstone",
-    "province": "Northamptonshire"
+    "street": "Calle de la Velocidad",
+    "number": "17",
+    "postal": "34567",
+    "city": "Endstone",
+    "province": "Londonshire"
   },
   "isFreelance": false
 }
@@ -220,8 +220,8 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "name": "Obras García S.L.",
-  "cif": "B12345678",
+  "name": "Renault F1 Team",
+  "cif": "B12345679",
   "isFreelance": false
 }
 
@@ -467,5 +467,131 @@ Content-Type: application/json
 {
   "email": "dave@bildyapp.com"
 }
+
+
+### ============================================================
+### ENDPOINTS PRÁCTICA FINAL
+### ============================================================
+
+
+### ============================================================
+### 11. CLIENTES — /api/client
+### ============================================================
+
+### Crear cliente → 201
+POST {{baseUrl}}/client HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "IKEA Madrid",
+  "cif": "T7845489A",
+  "email": "ikemaMadrid@ikea.com",
+  "phone": "911223344",
+  "address": {
+    "street": "Calle del Mueble",
+    "number": "9",
+    "postal": "28050",
+    "city": "madrid",
+    "province": "Madrid"
+  }
+}
+
+###
+
+### Sin compañía asociada → 400
+POST {{baseUrl}}/client HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Cliente Sin Empresa",
+  "cif": "B99999999"
+}
+
+###
+
+### CIF duplicado en la misma compañía → 409
+POST {{baseUrl}}/client HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Otro con mismo CIF",
+  "cif": "B12345678"
+}
+
+###
+
+### Listar clientes (paginación por defecto)
+GET {{baseUrl}}/client HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Listar con paginación y filtro por nombre
+GET {{baseUrl}}/client?page=1&limit=5&name=López HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Listar con ordenación
+GET {{baseUrl}}/client?sort=-createdAt HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Obtener cliente por ID
+GET {{baseUrl}}/client/{{clientId}} HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### ID inexistente → 404
+GET {{baseUrl}}/client/000000000000000000000000 HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Actualizar cliente
+PUT {{baseUrl}}/client/{{clientId}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "phone": "611999888",
+  "email": "flexicar2@flexicar.com"
+}
+
+###
+
+### Soft delete → archived: true
+DELETE {{baseUrl}}/client/{{clientId}}?soft=true HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Hard delete → elimina de MongoDB
+DELETE {{baseUrl}}/client/{{clientId}} HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Listar clientes archivados
+GET {{baseUrl}}/client/archived HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Restaurar cliente archivado
+PATCH {{baseUrl}}/client/69eb2cd91018dc2325cf577f/restore HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Sin token → 401
+GET {{baseUrl}}/client HTTP/1.1
+
+
 
 
