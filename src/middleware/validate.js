@@ -5,18 +5,22 @@ export const validate = (schema) => (req, res, next) => {
       body: req.body,
       query: req.query,
       params: req.params,
-    });
-    next();
+    })
+    next()
   } catch (error) {
-    const errors = error.errors.map((e) => ({
-      field: e.path.join('.'),
-      message: e.message,
-    }));
-    res.status(400).json({
-      error: true,
-      message: 'Error de validación',
-      code: 'VALIDATION_ERROR',
-      details: errors,
-    });
+    if (error?.name === 'ZodError') {
+      const issues = error.issues ?? []
+      const errors = issues.map((e) => ({
+        field: e.path.join('.'),
+        message: e.message,
+      }))
+      return res.status(400).json({
+        error: true,
+        message: 'Error de validación',
+        code: 'VALIDATION_ERROR',
+        details: errors,
+      })
+    }
+    next(error)
   }
-};
+}

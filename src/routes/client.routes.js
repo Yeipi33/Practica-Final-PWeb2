@@ -19,9 +19,9 @@ router.use(authMiddleware)
 router.get('/archived', getArchivedClients);
 router.patch('/:id/restore', restoreClient);
 router.get('/', getClients);
-router.get(':id', getClientById);
+router.get('/:id', getClientById);
 router.post('/', validate(createClientValidator), createClient);
-router.post('/:id', validate(updateClientValidator), updateClient);
+router.put('/:id', validate(updateClientValidator), updateClient);
 router.delete('/:id', deleteClient);
 
 export default router

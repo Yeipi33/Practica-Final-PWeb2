@@ -9,11 +9,21 @@ const addressSchema = z.object({
 }).optional()
 
 export const createClientValidator = z.object({
-  name:    z.string().min(2, 'El nombre es obligatorio'),
-  cif:     z.string().min(9, 'El CIF debe tener al menos 9 caracteres'),
-  email:   z.string().email('Email no válido').optional(),
-  phone:   z.string().optional(),
-  address: addressSchema
+  body: z.object({
+    name:    z.string().min(2, 'El nombre es obligatorio'),
+    cif:     z.string().min(9, 'El CIF debe tener al menos 9 caracteres'),
+    email:   z.string().email('Email no válido').optional(),
+    phone:   z.string().optional(),
+    address: addressSchema
+  })
 })
 
-export const updateClientValidator = createClientValidator.partial()
+export const updateClientValidator = z.object({
+  body: z.object({
+    name:    z.string().min(2).optional(),
+    cif:     z.string().min(9).optional(),
+    email:   z.string().email().optional(),
+    phone:   z.string().optional(),
+    address: addressSchema
+  })
+})
