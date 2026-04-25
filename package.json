@@ -41,6 +41,6 @@
     "cross-env": "^10.1.0",
     "jest": "^30.3.0",
     "mongodb-memory-server": "^11.0.1",
-    "superjest": "^0.4.0"
+    "supertest": "^7.2.2"
   }
 }
