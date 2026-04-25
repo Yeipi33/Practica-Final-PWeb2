@@ -7,6 +7,10 @@ import clientRoutes from './routes/client.routes.js';
 import projectRoutes from './routes/project.routes.js';
 import deliveryNoteRoutes from './routes/deliverynote.routes.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
+const swaggerUi = require('swagger-ui-express')
+import swaggerSpec from './config/swagger.js';
 
 const app = express();
 
@@ -24,6 +28,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/client', clientRoutes);
 app.use('/api/project', projectRoutes);
 app.use('/api/deliverynote', deliveryNoteRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(notFound);
 app.use(errorHandler);
