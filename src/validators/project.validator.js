@@ -9,12 +9,23 @@ const addressSchema = z.object({
 }).optional()
 
 export const createProjectValidator = z.object({
-  client:      z.string().min(1, 'El cliente es obligatorio'),
-  name:        z.string().min(2, 'El nombre es obligatorio'),
-  projectCode: z.string().min(1, 'El código de proyecto es obligatorio'),
-  address:     addressSchema,
-  email:       z.string().email('Email no válido').optional(),
-  notes:       z.string().optional()
+  body: z.object({
+    client:      z.string({ required_error: 'El cliente es obligatorio' }),
+    name:        z.string().min(2, 'El nombre es obligatorio'),
+    projectCode: z.string().min(1, 'El código de proyecto es obligatorio'),
+    address:     addressSchema,
+    email:       z.string().email('Email no válido').optional(),
+    notes:       z.string().optional()
+  })
 })
 
-export const updateProjectValidator = createProjectValidator.partial()
+export const updateProjectValidator = z.object({
+  body: z.object({
+    client:      z.string().optional(),
+    name:        z.string().min(2).optional(),
+    projectCode: z.string().optional(),
+    address:     addressSchema,
+    email:       z.string().email().optional(),
+    notes:       z.string().optional()
+  })
+})

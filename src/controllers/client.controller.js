@@ -9,7 +9,7 @@ export const createClient = async (req, res, next) => {
         if(!company) return next(new AppError('Debes tener una compañia asociada', 400));
         
         const exists = await Client.findOne({ cif: req.body.cif.toUpperCase(), company });
-        if(exists) return next(new AppError('Ya existe un cliente con ese CIF en tu compañia', 400));
+        if(exists) return next(new AppError('Ya existe un cliente con ese CIF en tu compañia', 409));
 
         const client = await Client.create({
             ...req.body,

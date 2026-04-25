@@ -18,11 +18,14 @@ const deliveryNoteBase = z.object({
   workers:     z.array(workerSchema).optional()
 })
 
-export const createDeliveryNoteValidator = deliveryNoteBase.refine(data => {
-  if (data.format === 'material') return !!data.material
-  if (data.format === 'hours') return !!data.hours || (data.workers && data.workers.length > 0)
-  return true
-}, { message: 'Debes rellenar los campos correspondientes al formato elegido' })
+export const createDeliveryNoteValidator = z.object({
+  body: deliveryNoteBase.refine(data => {
+    if (data.format === 'material') return !!data.material
+    if (data.format === 'hours') return !!data.hours || (data.workers && data.workers.length > 0)
+    return true
+  }, { message: 'Debes rellenar los campos correspondientes al formato elegido' })
+})
 
-// Para el update usamos el base sin refine y todo opcional
-export const updateDeliveryNoteValidator = deliveryNoteBase.partial()
+export const updateDeliveryNoteValidator = z.object({
+  body: deliveryNoteBase.partial()
+})
