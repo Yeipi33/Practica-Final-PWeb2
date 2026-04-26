@@ -1,6 +1,7 @@
 import Project from '../models/Project.js'
 import Client from '../models/Clients.js'
 import {AppError} from '../utils/AppError.js'
+import { io } from '../app.js'
 
 //post /api/project
 export const createProject = async (req, res, next) => {
@@ -20,6 +21,8 @@ export const createProject = async (req, res, next) => {
       user: userId,
       company
     })
+
+    io.to(`company:${company}`).emit('project:new', { project })
 
     res.status(201).json({ ok: true, project })
   } catch (error) {
