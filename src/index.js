@@ -10,6 +10,7 @@ const startServer = async () => {
     console.log(`🚀 BildyApp API en http://localhost:${env.PORT}`);
     console.log(`📍 Entorno: ${env.NODE_ENV}`);
     console.log(`📡 Rutas: /api/user`);
+    console.log(`🔌 WebSockets activos`)
   });
 };
 
