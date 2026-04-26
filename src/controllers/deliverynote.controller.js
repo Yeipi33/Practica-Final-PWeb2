@@ -4,6 +4,7 @@ import Client from '../models/Clients.js'
 import {AppError} from '../utils/AppError.js'
 import { uploadToCloudinary, uploadPdfToCloudinary } from '../services/storage.service.js'
 import { generateDeliveryNotePdf } from '../services/pdf.service.js'
+import { io } from '../app.js'
 
 //patch /api/deliverynote/:id/sign
 export const signDeliveryNote = async (req, res, next) => {
@@ -39,6 +40,8 @@ export const signDeliveryNote = async (req, res, next) => {
 
     deliveryNote.pdfUrl = pdfResult.secure_url
     await deliveryNote.save()
+
+    io.to(`company:${company}`).emit('deliverynote:signed', { deliveryNote })
 
     res.json({ ok: true, message: 'Albarán firmado correctamente', deliveryNote })
   } catch (error) {
@@ -94,6 +97,8 @@ export const createDeliveryNote = async (req, res, next) => {
       user: userId,
       company
     })
+
+    io.to(`company:${company}`).emit('deliverynote:new', { deliveryNote })
 
     res.status(201).json({ ok: true, deliveryNote })
   } catch (error) {

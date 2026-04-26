@@ -1,5 +1,6 @@
 import Client from '../models/Clients.js';
 import { AppError } from '../utils/AppError.js';
+import { io } from '../app.js'
 
 //post /api/client
 export const createClient = async (req, res, next) => {
@@ -16,6 +17,8 @@ export const createClient = async (req, res, next) => {
             user: userId,
             company
         })
+
+        io.to(`company:${company}`).emit('client:new', { client })
 
         res.status(201).json({ok: true, client})
     }catch(error){
