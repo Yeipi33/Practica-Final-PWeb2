@@ -1,4 +1,5 @@
 //src/app.js
+import mongoose from 'mongoose'
 import express from 'express'
 import helmet from 'helmet'
 import cors from 'cors'
@@ -54,8 +55,16 @@ app.use(express.json({ limit: '10kb' }));
 app.use('/uploads', express.static('uploads'));
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
+  const dbState = mongoose.connection.readyState
+  const dbStatus = dbState === 1 ? 'connected' : 'disconnected'
+
+  res.json({
+    status: 'ok',
+    db: dbStatus,
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  })
+})
 
 app.use('/api/user', userRoutes);
 app.use('/api/client', clientRoutes);
