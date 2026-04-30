@@ -4,12 +4,12 @@
 ### ============================================================
 
 @baseUrl = http://localhost:3000/api
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWVmMmQwMzM5ZWQ1NmEzYmFhNTFmNjEiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzcyODIzMDgsImV4cCI6MTc3NzI4OTUwOH0.pRY95hqV7NLNWdcq3gydZpcBb8_NM_PB29MrxWOMPy4
-@refreshToken = 7fa9299a4e4e8ab0c8940442cda07ee4678cf7aedb1efa3aa1555d835f7bf73f247808a472a251e99d7e70c3567d852025d2fee82c2e05e173af489935ccbefa
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWYzMmYwMmQyMTFkMzNmM2FiMTA2ZGYiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Nzc1NDQ5NjIsImV4cCI6MTc3NzU1MjE2Mn0.J7-hY6xwzraXM3gGQyyO4RXcvRluAZvP1SBRBjbasFU
+@refreshToken = 3921993b4ad804a0374d558cd50c25202d041f8a24fc1853f3e6b5d3294e4a5b9ca00be0e9de83f4fdb239ed173ee8a1474110f66ba130ab0f9414e797fa7def
 
-@clientId = 69ef2e3f39ed56a3baa51f76
-@projectId = 69ef2e8839ed56a3baa51f86
-@deliveryNoteId = TU_ALBARAN_ID
+@clientId = 69f33250d211d33f3ab10713
+@projectId = 69f3328dd211d33f3ab10718
+@deliveryNoteId = 69f33325d211d33f3ab10738
 
 ### ============================================================
 ### 0. HEALTH CHECK
@@ -27,8 +27,8 @@ POST {{baseUrl}}/user/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "kate@bildyapp.com",
-  "password": "pass101010"
+  "email": "pablo@bildyapp.com",
+  "password": "pass909090"
 }
 
 ###
@@ -77,7 +77,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "code": "166515"
+  "code": "425111"
 }
 
 ###
@@ -122,8 +122,8 @@ POST {{baseUrl}}/user/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "kate@bildyapp.com",
-  "password": "pass101010"
+  "email": "pablo@bildyapp.com",
+  "password": "pass909090"
 }
 
 ###
@@ -160,9 +160,9 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "name": "kate",
-  "lastName": "Smith",
-  "nif": "12345678L"
+  "name": "Pablo",
+  "lastName": "García",
+  "nif": "99945678B"
 }
 
 ###
@@ -203,12 +203,12 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "name": "U-Tad",
-  "cif": "B12345673",
+  "name": "Nike",
+  "cif": "B12345633",
   "address": {
-    "street": "Calle Playa de Sitges",
-    "number": "20",
-    "postal": "28023",
+    "street": "Calle España",
+    "number": "89",
+    "postal": "26789",
     "city": "Madrid",
     "province": "Madrid"
   },
@@ -487,16 +487,16 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "name": "U-Tad",
-  "cif": "B12345673",
-  "email": "u-tad@u-tad.com",
-  "phone": "911223344",
+  "name": "Cliente Reforma",
+  "cif": "B11111111",
+  "email": "reforma@reforma.com",
+  "phone": "611999888",
   "address": {
-    "street": "Calle Playa de Sitges",
-    "number": "20",
-    "postal": "28023",
-    "city": "madrid",
-    "province": "Madrid"
+    "street": "Calle de la Reforma",
+    "number": "45",
+    "postal": "46001",
+    "city": "Valencia",
+    "province": "Comunidad Valenciana"
   }
 }
 
@@ -563,7 +563,7 @@ Authorization: Bearer {{accessToken}}
 
 {
   "phone": "611999888",
-  "email": "flexicar2@flexicar.com"
+  "email": "nike@nike.com"
 }
 
 ###
@@ -606,17 +606,17 @@ Authorization: Bearer {{accessToken}}
 
 {
   "client": "{{clientId}}",
-  "name": "Reforma Oficinas Centro",
-  "projectCode": "PROJ-001",
+  "name": "Reforma Chalet",
+  "projectCode": "PROY-001",
   "address": {
-    "street": "Calle Gran Vía",
+    "street": "Calle de la Reforma",
     "number": "45",
-    "postal": "28013",
-    "city": "Madrid",
-    "province": "Madrid"
+    "postal": "46001",
+    "city": "Valencia",
+    "province": "Comunidad Valenciana"
   },
-  "email": "obra@lopez.com",
-  "notes": "Acceso por puerta trasera"
+  "email": "reforma@reforma.com",
+  "notes": "Acceso por la puerta principal"
 }
 
 ###
@@ -685,5 +685,105 @@ Authorization: Bearer {{accessToken}}
 PATCH {{baseUrl}}/project/{{projectId}}/restore HTTP/1.1
 Authorization: Bearer {{accessToken}}
 
+### ============================================================
+### 13. ALBARANES — /api/deliverynote
+### ============================================================
 
+### Crear albarán de horas → 201
+POST {{baseUrl}}/deliverynote HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "client": "{{clientId}}",
+  "project": "{{projectId}}",
+  "format": "hours",
+  "description": "Instalación eléctrica planta baja",
+  "workDate": "2025-04-20",
+  "hours": 8,
+  "workers": [
+    { "name": "Carlos Martínez", "hours": 5 },
+    { "name": "Ana Gómez", "hours": 3 }
+  ]
+}
+
+###
+
+### Crear albarán de material → 201
+POST {{baseUrl}}/deliverynote HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "client": "{{clientId}}",
+  "project": "{{projectId}}",
+  "format": "material",
+  "description": "Entrega de cemento",
+  "workDate": "2025-04-20",
+  "material": "Cemento Portland",
+  "quantity": 50,
+  "unit": "sacos"
+}
+
+###
+
+### Listar albaranes
+GET {{baseUrl}}/deliverynote HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Filtrar por proyecto
+GET {{baseUrl}}/deliverynote?project={{projectId}} HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Filtrar por cliente y formato
+GET {{baseUrl}}/deliverynote?client={{clientId}}&format=hours HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Filtrar por rango de fechas
+GET {{baseUrl}}/deliverynote?from=2025-01-01&to=2025-12-31 HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Filtrar firmados
+GET {{baseUrl}}/deliverynote?signed=true HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Listar con paginación y orden
+GET {{baseUrl}}/deliverynote?page=1&limit=5&sort=-workDate HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Obtener albarán por ID
+GET {{baseUrl}}/deliverynote/{{deliveryNoteId}} HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Descargar PDF
+GET {{baseUrl}}/deliverynote/pdf/{{deliveryNoteId}} HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Eliminar albarán no firmado → 200
+DELETE {{baseUrl}}/deliverynote/{{deliveryNoteId}} HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Firmar albarán (usar Postman)
+### Method: PATCH
+### URL: http://localhost:3000/api/deliverynote/ALBARAN_ID/sign
+### Header: Authorization: Bearer {{accessToken}}
+### Body: form-data → key=signature, type=File, value=firma.png
 
