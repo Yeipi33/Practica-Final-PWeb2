@@ -1,4 +1,3 @@
-// src/services/notification.service.js
 import { EventEmitter } from 'node:events';
 
 class NotificationService extends EventEmitter {
@@ -6,7 +5,6 @@ class NotificationService extends EventEmitter {
     super({ captureRejections: true });
     this._registerListeners();
   }
-    //listeners para eventos de usuario
   _registerListeners() {
     this.on('user:registered', (user) => {
       console.log(`[EVENT] user:registered → ${user.email} (código: ${user.verificationCode})`);

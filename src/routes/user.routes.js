@@ -1,4 +1,3 @@
-// src/routes/user.routes.js
 import { Router } from 'express';
 import {
   register,
@@ -32,12 +31,10 @@ import {
 
 const router = Router();
 
-//publicas
 router.post("/register", validate(registerSchema), register);
 router.post('/login', validate(loginSchema), login);
 router.post('/refresh', validate(refreshTokenSchema), refreshToken);
 
-//protegidas
 router.put(
   '/validation',
   authMiddleware,

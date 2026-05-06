@@ -7,7 +7,6 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Sube un buffer de imagen a Cloudinary
 export const uploadToCloudinary = async (buffer, folder, filename) => {
     const optimized = await sharp(buffer)
         .resize({ width: 800, withoutEnlargement: true })
@@ -28,7 +27,6 @@ export const uploadToCloudinary = async (buffer, folder, filename) => {
     })
 }
 
-// Sube un PDF a Cloudinary
 export const uploadPdfToCloudinary = async (buffer, folder, filename) => {
     return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(

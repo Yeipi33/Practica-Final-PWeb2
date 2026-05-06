@@ -1,4 +1,3 @@
-//src/index.js
 import { env } from './config/index.js';
 import dbConnect from './config/db.js';
 import { httpServer } from './app.js';

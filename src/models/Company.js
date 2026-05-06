@@ -1,6 +1,3 @@
-//src/models/Company.js
-//estructura de la empresa, con su dirección anidada y referencia al usuario propietario
-
 import mongoose from 'mongoose';
 
 const addressSchema = new mongoose.Schema({

@@ -1,15 +1,9 @@
-//src/utils/handleJwt.js
 import jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '2h';
 
-/**
- * Genera un token JWT
- * @param {Object} user - Usuario con _id y role
- * @returns {string} - Token JWT
- */
 export const tokenSign = (user) => {
   const sign = jwt.sign(
     {
@@ -30,11 +24,6 @@ export const generateRefreshToken = () => {
   return crypto.randomBytes(64).toString('hex');
 };
 
-/**
- * Verifica y decodifica un token
- * @param {string} tokenJwt - Token a verificar
- * @returns {Object|null} - Payload del token o null si es inválido
- */
 export const verifyToken = (tokenJwt) => {
   try {
     return jwt.verify(tokenJwt, JWT_SECRET);

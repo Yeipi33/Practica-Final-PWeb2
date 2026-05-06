@@ -1,6 +1,3 @@
-//src/middleware/role.middleware.js
-//Controlamos que usuarios pueden acceder a ciertas rutas segun su rol
-// src/middleware/role.middleware.js
 import { AppError } from '../utils/AppError.js';
 
 const checkRol = (roles) => (req, res, next) => {

@@ -1,4 +1,3 @@
-// src/validators/auth.validators.js
 import { z } from 'zod';
 
 export const registerSchema = z.object({
@@ -99,7 +98,6 @@ export const inviteUserSchema = z.object({
   }),
 });
 
-//valida los datos que llegan al body cuando el usuario quiere cambiar su contraseña
 export const changePasswordSchema = z.object({
   body: z
     .object({
@@ -110,7 +108,6 @@ export const changePasswordSchema = z.object({
         .string({ required_error: 'La nueva contraseña es requerida' })
         .min(8, 'La nueva contraseña debe tener al menos 8 caracteres'),
     })
-    // .refine() valida que la nueva cntraseña sea diferente a la actual
     .refine((data) => data.currentPassword !== data.newPassword, {
       message: 'La nueva contraseña debe ser diferente a la actual',
       path: ['newPassword'],

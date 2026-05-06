@@ -82,7 +82,6 @@ export const generateDeliveryNotePdf = (deliveryNote) => {
       doc.font('Helvetica')
       doc.text(`Firmado el: ${new Date(deliveryNote.signedAt).toLocaleDateString('es-ES')}`)
       doc.moveDown()
-      //insertar la imagen de la firma por url
       try {
         doc.image(deliveryNote.signatureUrl, { width: 200 })
       } catch (_) {

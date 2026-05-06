@@ -187,7 +187,6 @@ export const deleteDeliveryNote = async (req, res, next) => {
     const deliveryNote = await DeliveryNote.findOne({ _id: req.params.id, company, deleted: false })
     if (!deliveryNote) return next(new AppError('Albarán no encontrado', 404))
 
-    // No se puede borrar si está firmado
     if (deliveryNote.signed) {
       return next(new AppError('No se puede eliminar un albarán firmado', 400))
     }

@@ -1,4 +1,3 @@
-// src/controllers/user.controller.js
 import { randomInt } from 'node:crypto';
 import User from '../models/Usuario.js';
 import Company from '../models/Company.js';
@@ -93,7 +92,6 @@ export const validateEmail = async (req, res) => {
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
-  // Incluir password (select: false en el modelo)
   const user = await User.findOne({ email, deleted: false }).select('+password');
 
   if (!user) throw AppError.unauthorized('Credenciales inválidas');
@@ -137,7 +135,6 @@ export const updateCompany = async (req, res) => {
 
   let companyData = { name, cif, address, isFreelance };
 
-  // Si es autónomo → usar datos personales del usuario
   if (isFreelance) {
     companyData = {
       name: currentUser.name,
@@ -147,20 +144,17 @@ export const updateCompany = async (req, res) => {
     };
   }
 
-  // Buscar si ya existe una Company con ese CIF
   const existingCompany = await Company.findOne({ cif: companyData.cif });
 
   let company;
   let newRole = currentUser.role;
 
   if (!existingCompany) {
-    // No existe → crear nueva, el usuario es owner (admin)
     company = await Company.create({
       ...companyData,
       owner: currentUser._id,
     });
   } else {
-    // Ya existe → unirse con role guest
     company = existingCompany;
     newRole = 'guest';
   }
@@ -234,10 +228,8 @@ export const deleteUser = async (req, res) => {
   const userId = req.user._id;
 
   if (isSoft) {
-    // Soft delete: se marca como eliminado pero no se borra físicamente
     await User.findByIdAndUpdate(userId, { deleted: true });
   } else {
-    // Hard delete: se elimina físicamente de la base de datos
     await User.findByIdAndDelete(userId);
   }
 
@@ -292,7 +284,6 @@ export const inviteUser = async (req, res) => {
 export const changePassword = async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 
-  // Incluir password para comparar
   const user = await User.findById(req.user._id).select('+password');
 
   const isMatch = await compare(currentPassword, user.password);

@@ -1,9 +1,4 @@
-//src/models/Usuario.js
-//estructura del modelo de usuario
-
-//import { contentSecurityPolicy } from 'helmet';
 import mongoose from 'mongoose';
-//import { union } from 'zod';
 
 const  addressSchema = new mongoose.Schema({
     street: { type: String, trim: true },

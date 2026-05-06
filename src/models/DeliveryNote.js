@@ -13,14 +13,11 @@ const deliveryNoteSchema = new mongoose.Schema({
   format:      { type: String, enum: ['material', 'hours'], required: true },
   description: { type: String },
   workDate:    { type: Date, required: true },
-  //material
   material:    { type: String },
   quantity:    { type: Number, min: 0 },
   unit:        { type: String },
-  //horas
   hours:       { type: Number, min: 0 },
   workers:     [workerSchema],
-  //firma
   signed:       { type: Boolean, default: false },
   signedAt:     { type: Date },
   signatureUrl: { type: String },

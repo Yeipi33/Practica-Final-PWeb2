@@ -1,7 +1,3 @@
-
-//src/middleware/uploads.js
-//uploads.js permite recibir y subir imagenes al servidor usando multer en las peticiones HTTP
-
 import multer from "multer";
 import {extname, join} from "path";
 
@@ -19,7 +15,6 @@ const diskStorageConfig = multer.diskStorage({
   },
 })
 
-//alamacena en memoria para subir a cloudinary
 const memoryStorage = multer.memoryStorage()
 
 const fileFilter = (req, file, cb) => {
@@ -32,14 +27,12 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-//para el disco
 const uploadMiddleware = multer({
   storage: diskStorageConfig,
   fileFilter,
   limits: { fileSize: 5 * 1024 * 1024, files: 1 },
 })
 
-//para la firma
 export const uploadSingle = multer({
   storage: memoryStorage,
   fileFilter,

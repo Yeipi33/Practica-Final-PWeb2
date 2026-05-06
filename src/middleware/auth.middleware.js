@@ -1,4 +1,3 @@
-// src/middleware/auth.middleware.js
 import User from '../models/Usuario.js';
 import { verifyToken } from '../utils/handleJWT.js';
 import { AppError } from '../utils/AppError.js';

@@ -1,6 +1,3 @@
-//src/config/db.js
-//Conexion a MongoDB usando Mongoose
-
 import mongoose from 'mongoose';
 
 import dns from 'dns';

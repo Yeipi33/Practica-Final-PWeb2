@@ -10,13 +10,11 @@ afterAll(async () => await closeDB())
 afterEach(async () => await clearDB())
 
 beforeEach(async () => {
-  // Registrar usuario
   const reg = await request(app)
     .post('/api/user/register')
     .send({ email: 'client@bildyapp.com', password: 'password123' })
   token = reg.body.accessToken
 
-  // Crear compañía
   const comp = await request(app)
     .patch('/api/user/company')
     .set('Authorization', `Bearer ${token}`)
