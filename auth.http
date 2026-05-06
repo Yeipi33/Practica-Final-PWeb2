@@ -1,0 +1,391 @@
+### ============================================================
+### BildyApp API — Auth endpoints
+### ============================================================
+
+@baseUrl = http://localhost:3000/api
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWZhZjcxMGNlMjc3Y2RlZjk4NmNmOWYiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzgwNTQ5MjgsImV4cCI6MTc3ODA2MjEyOH0.DC1gP9AketovXSguK2CvSsGC1ITElSHpnn6_fHDOdiA
+@refreshToken = d5fb7b9486fe632f5c5319852a11c4d18bbc3ec7d0af4618ff9e89f51f70cc959dd6967a8c7ec8f3f176fdcf51960e637cf8794fae20a75598ae8a5c78a69e1b
+
+
+### ============================================================
+### 0. HEALTH CHECK
+### ============================================================
+
+GET http://localhost:3000/health HTTP/1.1
+
+
+### ============================================================
+### 1. REGISTRO — POST /api/user/register
+### ============================================================
+
+### Registro correcto → 201
+POST {{baseUrl}}/user/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "wilfred@bildyapp.com",
+  "password": "444433333"
+}
+
+###
+
+### Email inválido → 400
+POST {{baseUrl}}/user/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "no-es-un-email",
+  "password": "password123"
+}
+
+###
+
+### Contraseña menor de 8 caracteres → 400
+POST {{baseUrl}}/user/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "bob@bildyapp.com",
+  "password": "123"
+}
+
+###
+
+### Email duplicado → 409
+POST {{baseUrl}}/user/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "alice@bildyapp.com",
+  "password": "password123"
+}
+
+
+### ============================================================
+### 2. VALIDACIÓN EMAIL — PUT /api/user/validation
+### ============================================================
+
+### Código correcto → 200
+PUT {{baseUrl}}/user/validation HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "code": "425111"
+}
+
+###
+
+### Código incorrecto → 400
+PUT {{baseUrl}}/user/validation HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "code": "000000"
+}
+
+###
+
+### Código con menos de 6 dígitos → 400
+PUT {{baseUrl}}/user/validation HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "code": "123"
+}
+
+###
+
+### Sin token → 401
+PUT {{baseUrl}}/user/validation HTTP/1.1
+Content-Type: application/json
+
+{
+  "code": "123456"
+}
+
+
+### ============================================================
+### 3. LOGIN — POST /api/user/login
+### ============================================================
+
+### Login correcto → 200
+POST {{baseUrl}}/user/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "wilfred@bildyapp.com",
+  "password": "444433333"
+}
+
+###
+
+### Contraseña incorrecta → 401
+POST {{baseUrl}}/user/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "alice@bildyapp.com",
+  "password": "wrongpassword"
+}
+
+###
+
+### Email no registrado → 401
+POST {{baseUrl}}/user/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "noexiste@bildyapp.com",
+  "password": "password123"
+}
+
+
+### ============================================================
+### 4a. DATOS PERSONALES — PUT /api/user/register
+### ============================================================
+
+### Actualizar datos → 200
+PUT {{baseUrl}}/user/register HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "wilfred",
+  "lastName": "smith",
+  "nif": "12345678L"
+}
+
+###
+
+### Sin nombre → 400
+PUT {{baseUrl}}/user/register HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "lastName": "García",
+  "nif": "12345678A"
+}
+
+###
+
+### Sin token → 401
+PUT {{baseUrl}}/user/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Alice",
+  "lastName": "García",
+  "nif": "12345678A"
+}
+
+
+### ============================================================
+### 4b. DATOS DE COMPAÑÍA — PATCH /api/user/company
+### ============================================================
+
+### Crear compañía nueva → 200
+PATCH {{baseUrl}}/user/company HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Mercedes-Benz España S.A.",
+  "cif": "R76543210B",
+  "address": {
+    "street": "Calle de la rueda",
+    "number": "55",
+    "postal": "28009",
+    "city": "Madrid",
+    "province": "Madrid"
+  },
+  "isFreelance": false
+}
+
+###
+
+### Unirse a compañía existente → role pasa a guest
+PATCH {{baseUrl}}/user/company HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Renault F1 Team",
+  "cif": "B12345679",
+  "isFreelance": false
+}
+
+###
+
+### Sin CIF → 400
+PATCH {{baseUrl}}/user/company HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Obras García S.L.",
+  "isFreelance": false
+}
+
+
+### ============================================================
+### 5. LOGO — PATCH /api/user/logo
+### Usar Postman: form-data → key=logo, type=File
+### ============================================================
+
+
+### ============================================================
+### 6. OBTENER USUARIO — GET /api/user/me
+### ============================================================
+
+GET {{baseUrl}}/user/me HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Sin token → 401
+GET {{baseUrl}}/user HTTP/1.1
+
+###
+
+### Token inválido → 401
+GET {{baseUrl}}/user HTTP/1.1
+Authorization: Bearer token_invalido_123
+
+
+### ============================================================
+### 7a. REFRESH TOKEN — POST /api/user/refresh
+### ============================================================
+
+POST {{baseUrl}}/user/refresh HTTP/1.1
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+###
+
+### Token inválido → 401
+POST {{baseUrl}}/user/refresh HTTP/1.1
+Content-Type: application/json
+
+{
+  "refreshToken": "token_invalido_o_ya_usado"
+}
+
+###
+
+### Sin refreshToken → 400
+POST {{baseUrl}}/user/refresh HTTP/1.1
+Content-Type: application/json
+
+{}
+
+
+### ============================================================
+### 7b. LOGOUT — POST /api/user/logout
+### ============================================================
+
+POST {{baseUrl}}/user/logout HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+
+### ============================================================
+### 8. ELIMINAR USUARIO — DELETE /api/user
+### ============================================================
+
+### Soft delete → deleted: true
+DELETE {{baseUrl}}/user/delete?soft=true HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Hard delete → elimina de MongoDB
+DELETE {{baseUrl}}/user/delete HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Sin token → 401
+DELETE {{baseUrl}}/user HTTP/1.1
+
+
+### ============================================================
+### 9. CAMBIAR CONTRASEÑA — PUT /api/user/password
+### ============================================================
+
+PUT {{baseUrl}}/user/password HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "currentPassword": "pass909090",
+  "newPassword": "newPassword456"
+}
+
+###
+
+### Nueva igual a la actual → 400
+PUT {{baseUrl}}/user/password HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "currentPassword": "pass909090",
+  "newPassword": "pass909090"
+}
+
+###
+
+### Contraseña actual incorrecta → 400
+PUT {{baseUrl}}/user/password HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "currentPassword": "wrongpassword",
+  "newPassword": "newPassword456"
+}
+
+
+### ============================================================
+### 10. INVITAR COMPAÑERO — POST /api/user/invite
+### ============================================================
+
+### Admin invita → 201
+POST {{baseUrl}}/user/invite HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "email": "bob@bildyapp.com",
+  "name": "Bob",
+  "lastName": "Martínez"
+}
+
+###
+
+### Email ya registrado → 409
+POST {{baseUrl}}/user/invite HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "email": "alice@bildyapp.com",
+  "name": "Alice",
+  "lastName": "García"
+}
+
+###
+
+### Sin token → 401
+POST {{baseUrl}}/user/invite HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "dave@bildyapp.com"
+}

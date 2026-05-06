@@ -1,0 +1,131 @@
+### ============================================================
+### BildyApp API — Albaranes
+### ============================================================
+
+@baseUrl = http://localhost:3000/api
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWZhZjcxMGNlMjc3Y2RlZjk4NmNmOWYiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzgwNTQ5MjgsImV4cCI6MTc3ODA2MjEyOH0.DC1gP9AketovXSguK2CvSsGC1ITElSHpnn6_fHDOdiA
+@clientId = 69faf7cece277cdef986cfb1
+@projectId = 69fafa24ce277cdef986cfcc
+@deliveryNoteId = 69fafc57ce277cdef986d026
+
+
+### ============================================================
+### 13. ALBARANES — /api/deliverynote
+### ============================================================
+
+### Crear albarán de horas → 201
+POST {{baseUrl}}/deliverynote HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "client": "{{clientId}}",
+  "project": "{{projectId}}",
+  "format": "hours",
+  "description": "Jornada de trabajo para instalación de maquinaria",
+  "workDate": "2026-01-10",
+  "hours": 8,
+  "workers": [
+    { "name": "Bruno Silva", "hours": 5 },
+    { "name": "Lucia Rodriguez", "hours": 3 }
+  ]
+}
+
+###
+
+### Crear albarán de material → 201
+POST {{baseUrl}}/deliverynote HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "client": "{{clientId}}",
+  "project": "{{projectId}}",
+  "format": "material",
+  "description": "Entrega de piezas de parte de proveedores",
+  "workDate": "2022-11-15",
+  "material": "Piezas de acero",
+  "quantity": 30,
+  "unit": "unidades"
+}
+
+###
+
+### Formato inválido → 400
+POST {{baseUrl}}/deliverynote HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "client": "{{clientId}}",
+  "project": "{{projectId}}",
+  "format": "invalido",
+  "workDate": "2025-04-20"
+}
+
+###
+
+### Listar albaranes
+GET {{baseUrl}}/deliverynote HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Filtrar por proyecto
+GET {{baseUrl}}/deliverynote?project={{projectId}} HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Filtrar por cliente y formato
+GET {{baseUrl}}/deliverynote?client={{clientId}}&format=hours HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Filtrar por rango de fechas
+GET {{baseUrl}}/deliverynote?from=2025-01-01&to=2025-12-31 HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Filtrar firmados
+GET {{baseUrl}}/deliverynote?signed=true HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Listar con paginación y orden
+GET {{baseUrl}}/deliverynote?page=1&limit=5&sort=-workDate HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Obtener albarán por ID
+GET {{baseUrl}}/deliverynote/{{deliveryNoteId}} HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Descargar PDF
+GET {{baseUrl}}/deliverynote/pdf/{{deliveryNoteId}} HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Eliminar albarán no firmado → 200
+DELETE {{baseUrl}}/deliverynote/{{deliveryNoteId}} HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Firmar albarán
+### Method: PATCH
+### URL: http://localhost:3000/api/deliverynote/{{deliveryNoteId}}/sign
+### Header: Authorization: Bearer {{accessToken}}
+### Body: form-data → key=signature, type=File, value=firma.png
+
+###
+
+### Sin token → 401
+GET {{baseUrl}}/deliverynote HTTP/1.1

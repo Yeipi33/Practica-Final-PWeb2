@@ -1,0 +1,126 @@
+### ============================================================
+### BildyApp API — Clientes
+### ============================================================
+
+@baseUrl = http://localhost:3000/api
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWZhZjcxMGNlMjc3Y2RlZjk4NmNmOWYiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzgwNTQ5MjgsImV4cCI6MTc3ODA2MjEyOH0.DC1gP9AketovXSguK2CvSsGC1ITElSHpnn6_fHDOdiA
+@clientId = 69faf7cece277cdef986cfb1
+
+
+### ============================================================
+### 11. CLIENTES — /api/client
+### ============================================================
+
+### Crear cliente → 201
+POST {{baseUrl}}/client HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Mercedes-Benz España S.A.",
+  "cif": "R76543210B",
+  "email": "mercedes@mercedes.com",
+  "phone": "911123456",
+  "address": {
+    "street": "Calle de la rueda",
+    "number": "55",
+    "postal": "28009",
+    "city": "Madrid",
+    "province": "Madrid"
+  }
+}
+
+###
+
+### Sin compañía asociada → 400
+POST {{baseUrl}}/client HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Cliente Sin Empresa",
+  "cif": "B99999999"
+}
+
+###
+
+### CIF duplicado → 409
+POST {{baseUrl}}/client HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Otro con mismo CIF",
+  "cif": "B11111111"
+}
+
+###
+
+### Listar clientes (paginación por defecto)
+GET {{baseUrl}}/client HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Listar con paginación y filtro por nombre
+GET {{baseUrl}}/client?page=1&limit=5&name=Reforma HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Listar con ordenación
+GET {{baseUrl}}/client?sort=-createdAt HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Obtener cliente por ID
+GET {{baseUrl}}/client/{{clientId}} HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### ID inexistente → 404
+GET {{baseUrl}}/client/000000000000000000000000 HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Actualizar cliente
+PUT {{baseUrl}}/client/{{clientId}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "phone": "61199888",
+  "email": "mercedes@mercedes.com"
+}
+
+###
+
+### Soft delete → archived: true
+DELETE {{baseUrl}}/client/{{clientId}}?soft=true HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Hard delete → elimina de MongoDB
+DELETE {{baseUrl}}/client/{{clientId}} HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Listar clientes archivados
+GET {{baseUrl}}/client/archived HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Restaurar cliente archivado
+PATCH {{baseUrl}}/client/{{clientId}}/restore HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Sin token → 401
+GET {{baseUrl}}/client HTTP/1.1
