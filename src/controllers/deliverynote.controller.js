@@ -17,7 +17,7 @@ export const signDeliveryNote = async (req, res, next) => {
       .populate('project', 'name projectCode notes')
 
     if (!deliveryNote) return next(new AppError('Albarán no encontrado', 404))
-    if (deliveryNote.signed) return next(new AppError('Este albarán ya está firmado', 400))
+    if (deliveryNote.signed) return next(new AppError('Este albarán ya está firmado', 409))
     if (!req.file) return next(new AppError('Debes adjuntar la imagen de la firma', 400))
 
     const signatureResult = await uploadToCloudinary(
@@ -188,7 +188,7 @@ export const deleteDeliveryNote = async (req, res, next) => {
     if (!deliveryNote) return next(new AppError('Albarán no encontrado', 404))
 
     if (deliveryNote.signed) {
-      return next(new AppError('No se puede eliminar un albarán firmado', 400))
+      return next(new AppError('No se puede eliminar un albarán firmado', 409))
     }
 
     await deliveryNote.deleteOne()
