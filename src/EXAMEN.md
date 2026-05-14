@@ -48,3 +48,14 @@ Si alguien cambiara if (deliveryNote.signed) por if (!deliveryNote.signed), ¿tu
 
 ## Respuesta:
 Los tests anteriores no lo detectarían, porque solo cubrían creación, listado y borrado de albaranes no firmados — nunca ejercían el caso de rechazar una operación sobre un albarán firmado. Con los dos tests nuevos (409 al re-firmar y 409 al borrar firmado), esa regresión sí se detecta inmediatamente: el test esperaría 409 y recibiría 200, fallando en rojo. Un test de contrato de API (como los de supertest) verifica el comportamiento completo del sistema desde fuera — ruta, middleware, controlador, modelo — y detecta regresiones end-to-end pero sin señalar exactamente dónde está el fallo. Un test unitario del modelo aísla solo la lógica del modelo Mongoose y detecta el fallo en la capa de dominio con precisión quirúrgica, pero no garantiza que el controlador llame correctamente a esa lógica. Lo ideal es tener ambos: los unitarios localizan el bug, los de contrato garantizan que el sistema completo cumple el contrato con el cliente.
+
+## Proceso
+Tiempo total invertido: 45 minutos
+Herramientas usadas: VS Code, Claude
+Prompts a IA:
+- "esta es la corrección, ahí se encuentran las preguntas"
+- "devuélveme este código con la tarea 1 hecha"
+- "cambia este código para la tarea 2"
+- "haz la tarea 4 en este código"
+- "Documenta en EXAMEN.md la diferencia semántica entre 400 y 409 según RFC 9110"
+- "al hacer el test me dan error"
