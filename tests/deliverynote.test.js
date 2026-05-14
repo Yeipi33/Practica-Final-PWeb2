@@ -1,6 +1,11 @@
 import { connectDB, closeDB, clearDB } from './setup.js'
 import request from 'supertest'
 import app from '../src/app.js'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 let token
 let clientId
@@ -33,6 +38,35 @@ beforeEach(async () => {
     .send({ client: clientId, name: 'Proyecto Test', projectCode: 'PROJ-001' })
   projectId = project.body.project._id
 })
+
+// Helper: crea un albarán y lo firma, devuelve su id
+const createAndSign = async () => {
+  const created = await request(app)
+    .post('/api/deliverynote')
+    .set('Authorization', `Bearer ${token}`)
+    .send({
+      client: clientId,
+      project: projectId,
+      format: 'hours',
+      workDate: '2025-04-20',
+      hours: 8
+    })
+
+  const id = created.body.deliveryNote._id
+
+  // Imagen PNG mínima válida (1x1 px) como buffer
+  const minimalPng = Buffer.from(
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+    'base64'
+  )
+
+  await request(app)
+    .patch(`/api/deliverynote/${id}/sign`)
+    .set('Authorization', `Bearer ${token}`)
+    .attach('signature', minimalPng, { filename: 'firma.png', contentType: 'image/png' })
+
+  return id
+}
 
 describe('Albaranes — POST /api/deliverynote', () => {
   it('debe crear un albarán de horas', async () => {
@@ -105,6 +139,34 @@ describe('Albaranes — DELETE /api/deliverynote/:id', () => {
       .set('Authorization', `Bearer ${token}`)
 
     expect(res.status).toBe(200)
+  })
+
+  it('debe devolver 409 al intentar eliminar un albarán firmado', async () => {
+    const id = await createAndSign()
+
+    const res = await request(app)
+      .delete(`/api/deliverynote/${id}`)
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(res.status).toBe(409)
+  })
+})
+
+describe('Albaranes — PATCH /api/deliverynote/:id/sign', () => {
+  it('debe devolver 409 al intentar firmar un albarán ya firmado', async () => {
+    const id = await createAndSign()
+
+    const minimalPng = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+      'base64'
+    )
+
+    const res = await request(app)
+      .patch(`/api/deliverynote/${id}/sign`)
+      .set('Authorization', `Bearer ${token}`)
+      .attach('signature', minimalPng, { filename: 'firma.png', contentType: 'image/png' })
+
+    expect(res.status).toBe(409)
   })
 })
 
